@@ -1,29 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TodosByBackbone</title>
+    <title>Todos By Backbone</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/todo.css">
 </head>
+
 <body>
-    <div id="todoapp" class="container">
-        <div class="title">
-            <h1>todos</h1>
-        </div>
+    <div class="container">
+        <h1>todos</h1>
 
-        <div class="content">
-            <div id="create-todo">
-                <input type="text" placeholder="有何计划?" id="new-todo" />
-            </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Author</th>
+                    <th>Title</th>
+                    <th>Url</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <th><input type="text" class="form-control author-input"></th>
+                    <th><input type="text" class="form-control title-input"></th>
+                    <th><input type="text" class="form-control url-input"></th>
+                    <th><button class="btn btn-primary add-blog">ADD</button></th>
+                </tr>
+            </thead>
+            <tbody class="blogs-list">
 
-            <div id="todos">
-                <ul id="todo-list"></ul>
-            </div>
-        </div>
+            </tbody>
+        </table>
     </div>
+
+    <script type="text/template" class="blog-list-template">
+        <td><span class="author"><%= author %></span></td>
+        <td><span class="title"><%= title %></span></td>
+        <td><span class="url"><%= url %></span></td>
+        <td><button class="btn btn-warning edit-blog">EDIT</button><button class="btn btn-danger delete-blog">DELETD</button></td>
+    </script>
+
+
 
 
     <script src="./js/jquery.min.js"></script>
@@ -31,6 +50,7 @@
     <script src="./js/underscore-min.js"></script>
     <script src="./js/backbone-min.js"></script>
     <script src="./js/todo.js"></script>
-    
+
 </body>
+
 </html>
