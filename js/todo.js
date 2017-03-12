@@ -11,25 +11,23 @@ var Blog = Backbone.Model.extend({
 
 //Backbone.Collection
 
-var Blogs = Backbone.Collection.extend({
-
-});
+var Blogs = Backbone.Collection.extend({});
 
 // instantiate two Blogs
 
-var blog1 = new Blog({
-    author: 'Spencer',
-    title: 'Spencer\'s blog',
-    url: 'http://www.spencer.com'
-});
+// var blog1 = new Blog({
+//     author: 'Spencer',
+//     title: 'Spencer\'s blog',
+//     url: 'http://www.spencer.com'
+// });
 
-var blog2 = new Blog({
-    author: 'Dianna',
-    title: 'Dianna\'s blog',
-    url: 'http://dianna.com'
-});
+// var blog2 = new Blog({
+//     author: 'Dianna',
+//     title: 'Dianna\'s blog',
+//     url: 'http://dianna.com'
+// });
 
-// instantiate a Collection 传入两个实例到 blog 的集合
+// instantiate a Collection
 
 var blogs = new Blogs();
 
@@ -45,33 +43,17 @@ var BlogView = Backbone.View.extend({
         // 这里使用了 underscore 的模板方法
         this.template = _.template($('.blog-list-template').html());
     },
-    render: function() {
-        // 这里的 el 指的就是 tr，传入的是设好的模板，模板的参数就是 model.toJSON() 方法得到的 hash 列表 
-        this.$el.html(this.template(this.model.toJSON()));
-        // 防止链式调用 enable chained calls.
-        return this;
-    }
-});
-
-// Backbone.View for one blog 多条信息结合的视图
-
-var BlogsView = Backbone.View.extend({
-    model: blogs,
-    el: $('.blogs-list'),
-    initialize: function() {
-        this.model.on('add', this.render, this);
-    },
     events: {
         'click .edit-blog': 'edit',
-        'update .update-blog': 'update',
-        'delete .delete-blog': 'delete',
-        'cancel .cancel': 'cancel'
+        'click .update-blog': 'update',
+        'click .delete-blog': 'delete',
+        'click .cancel': 'cancel'
     },
     edit: function() {
         $('.edit-blog').hide();
         $('.delete-blog').hide();
-        $('.update-blog').show();
-        $('.cancel').show();
+        this.$('.update-blog').show();
+        this.$('.cancel').show();
 
         var author = this.$('.author').html();
         var title = this.$('.title').html();
@@ -82,14 +64,54 @@ var BlogsView = Backbone.View.extend({
         this.$('.url').html('<input type="text" class="form-control url-update" value="' + url + '">');
     },
     update: function() {
-        var author = $('.author-update').val();
-        var title = $('.title-update').val();
-        var url = $('.url-update').val();
+        console.log('update now');
+        var author = this.$('.author-update').val();
+        var title = this.$('.title-update').val();
+        var url = this.$('.url-update').val();
         this.model.set({ author: author, title: title, url: url });
         $('.edit-blog').show();
         $('.delete-blog').show();
         $('.update-blog').hide();
         $('.cancel').hide();
+    },
+    cancel: function() {
+        blogsView.render();
+    },
+    delete: function() {
+        console.log('delete');
+        this.model.destroy({
+            success: function() {
+                console.log('successfully delete')
+            },
+            error: function() {
+                console.log('failed to delete')
+            }
+        });
+    },
+    render: function() {
+        // 这里的 el 指的就是 tr，传入的是设好的模板，模板的参数就是 model.toJSON() 方法得到的 hash 列表 
+        this.$el.html(this.template(this.model.toJSON()));
+        // 返回this，链式调用 enable chained calls.
+        return this;
+    }
+});
+
+// Backbone.View for one blog 多条信息结合的视图
+
+var BlogsView = Backbone.View.extend({
+    model: blogs,
+    el: $('.blogs-list'),
+    initialize: function() {
+        var self = this;
+        this.model.on('add', this.render, this);
+        this.model.on('change', this.render, this);
+        this.model.on('remove', this.render, this);
+        // this.model.on('change', function() {
+        //         setTimeout(function() {
+        //             self.render();
+        //         }, 30);
+        //     },
+        //     this);
     },
     render: function() {
         var self = this;
